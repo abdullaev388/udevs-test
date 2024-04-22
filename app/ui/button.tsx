@@ -7,8 +7,8 @@ const button = cva(
   {
     variants: {
       appearance: {
-        primary: "border-primary-600",
-        secondary: "border-primary-600",
+        primary: "",
+        secondary: "",
       },
       color: {
         primary: "",
@@ -24,12 +24,12 @@ const button = cva(
       {
         appearance: "secondary",
         color: "primary",
-        className: "text-primary-600",
+        className: "border-primary-600 text-primary-600",
       },
       {
         appearance: "secondary",
         color: "red",
-        className: "text-red-500",
+        className: "text-red-500 border-border-primary",
       },
     ],
   },
