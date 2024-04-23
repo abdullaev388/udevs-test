@@ -4,7 +4,7 @@ import { ordersSlice } from "./orders";
 
 export const store = configureStore({
   reducer: {
-    todos: ordersSlice.reducer,
+    orders: ordersSlice.reducer,
   },
 });
 

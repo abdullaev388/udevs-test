@@ -7,7 +7,7 @@ import { store } from "@/app/store";
 import { useAppSelector, useAppDispatch } from "@/app/hooks";
 import { Input } from "@/app/ui/input";
 import { SearchIcon } from "@/app/ui/icons";
-import { searchChanged } from "@/app/orders";
+import { searchChanged, selectOrdersBySearch } from "@/app/orders";
 
 import { Header } from "./ui/header";
 import { Sidebar } from "./ui/sidebar";
@@ -42,13 +42,13 @@ export default function Home() {
 }
 
 const Search = () => {
-  const search = useAppSelector((state) => state.todos.search);
+  const search = useAppSelector((state) => state.orders.search);
   const dispatch = useAppDispatch();
   return (
     <Input
       value={search}
       wrapperClassName="w-[240px]"
-      icon={<SearchIcon />}
+      icon={<SearchIcon color="#0E73F6" />}
       placeholder="Поиск по ID"
       onChange={(ev) => dispatch(searchChanged({ value: ev.target.value }))}
     />
@@ -56,8 +56,8 @@ const Search = () => {
 };
 
 const NewOrdersList = () => {
-  const orders = useAppSelector((state) =>
-    state.todos.orders.filter((order) => order.status === "new"),
+  const orders = useAppSelector(selectOrdersBySearch).filter(
+    (order) => order.status === "new",
   );
   return (
     <OrdersList status="new" ordersAmount={orders.length}>
@@ -68,9 +68,11 @@ const NewOrdersList = () => {
   );
 };
 
+const comments = [""];
+
 const PreparingOrdersList = () => {
-  const orders = useAppSelector((state) =>
-    state.todos.orders.filter((order) => order.status === "preparing"),
+  const orders = useAppSelector(selectOrdersBySearch).filter(
+    (order) => order.status === "preparing",
   );
   return (
     <OrdersList status="preparing" ordersAmount={orders.length}>
@@ -79,7 +81,7 @@ const PreparingOrdersList = () => {
           key={order.id}
           order={order}
           ready={index === 0}
-          comments={index === 0 ? [""] : undefined}
+          comments={index === 0 ? comments : undefined}
         />
       ))}
     </OrdersList>
@@ -87,8 +89,8 @@ const PreparingOrdersList = () => {
 };
 
 const ReadyOrdersList = () => {
-  const orders = useAppSelector((state) =>
-    state.todos.orders.filter((order) => order.status === "ready"),
+  const orders = useAppSelector(selectOrdersBySearch).filter(
+    (order) => order.status === "ready",
   );
   return (
     <OrdersList status="ready" ordersAmount={orders.length}>
@@ -104,8 +106,8 @@ const ReadyOrdersList = () => {
 };
 
 const DeliveringOrdersList = () => {
-  const orders = useAppSelector((state) =>
-    state.todos.orders.filter((order) => order.status === "delivering"),
+  const orders = useAppSelector(selectOrdersBySearch).filter(
+    (order) => order.status === "delivering",
   );
   return (
     <OrdersList status="delivering" ordersAmount={orders.length}>

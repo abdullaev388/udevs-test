@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import { orders } from "@/app/lib/orders";
+import { RootState } from "@/app/store";
 
 const initialState = {
   orders,
@@ -9,7 +10,7 @@ const initialState = {
 };
 
 export const ordersSlice = createSlice({
-  name: "todos",
+  name: "orders",
   initialState,
   reducers: {
     searchChanged: (state, payload: PayloadAction<{ value: string }>) => {
@@ -17,5 +18,14 @@ export const ordersSlice = createSlice({
     },
   },
 });
+
+export const selectOrdersBySearch = (state: RootState) => {
+  if (!state.orders.search) {
+    return state.orders.orders;
+  }
+  return state.orders.orders.filter((order) =>
+    order.id.toString().includes(state.orders.search),
+  );
+};
 
 export const { searchChanged } = ordersSlice.actions;
