@@ -3,7 +3,7 @@ import React from "react";
 import { cva, VariantProps } from "class-variance-authority";
 
 const button = cva(
-  "py-[4px] px-[8px] flex gap-x-[4px] justify-center items-center rounded-[6px] text-[14px] leading-[24px] font-normal border border-solid",
+  "py-[4px] px-[8px] flex gap-x-[4px] justify-center items-center rounded-[6px] text-[14px] leading-[24px] font-normal",
   {
     variants: {
       appearance: {
@@ -24,12 +24,12 @@ const button = cva(
       {
         appearance: "secondary",
         color: "primary",
-        className: "border-primary-600 text-primary-600",
+        className: "border border-primary-600 text-primary-600",
       },
       {
         appearance: "secondary",
         color: "red",
-        className: "text-red-500 border-border-primary",
+        className: "border text-red-500 border-border-primary",
       },
     ],
   },

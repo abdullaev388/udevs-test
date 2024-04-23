@@ -1,4 +1,13 @@
+"use client";
+
 import React from "react";
+import { Provider } from "react-redux";
+
+import { store } from "@/app/store";
+import { useAppSelector, useAppDispatch } from "@/app/hooks";
+import { Input } from "@/app/ui/input";
+import { SearchIcon } from "@/app/ui/icons";
+import { searchChanged } from "@/app/orders";
 
 import { Header } from "./ui/header";
 import { Sidebar } from "./ui/sidebar";
@@ -10,56 +19,99 @@ import {
   BaseOrder,
 } from "./ui/orders";
 
-import { orders } from "./lib/orders";
-
 export default function Home() {
-  const newOrders = orders.filter((order) => order.status === "new");
-  const preparingOrders = orders.filter(
-    (order) => order.status === "preparing",
-  );
-  const readyOrders = orders.filter((order) => order.status === "ready");
-  const deliveringOrders = orders.filter(
-    (order) => order.status === "delivering",
-  );
   return (
-    <div className="flex">
-      <Sidebar />
-      <div className="w-full">
-        <Header />
-        <div className="flex gap-x-[16px] px-[16px] pt-[26px]">
-          <OrdersList status="new" ordersAmount={newOrders.length}>
-            {newOrders.map((order) => (
-              <NewOrder key={order.id} order={order} />
-            ))}
-          </OrdersList>
-          <OrdersList status="preparing" ordersAmount={preparingOrders.length}>
-            {preparingOrders.map((order, index) => (
-              <PreparingOrder
-                key={order.id}
-                order={order}
-                ready={index === 0}
-                comments={index === 0 ? [""] : undefined}
-              />
-            ))}
-          </OrdersList>
-          <OrdersList status="ready" ordersAmount={readyOrders.length}>
-            {readyOrders.map((order, index) => (
-              <ReadyOrder
-                key={order.id}
-                order={order}
-                complete={index === readyOrders.length - 1}
-              />
-            ))}
-          </OrdersList>
-          <OrdersList
-            status="delivering"
-            ordersAmount={deliveringOrders.length}>
-            {deliveringOrders.map((order) => (
-              <BaseOrder key={order.id} order={order} />
-            ))}
-          </OrdersList>
+    <Provider store={store}>
+      <div className="flex">
+        <Sidebar />
+        <div className="w-full">
+          <Header />
+          <div className="px-[16px] py-[10px]">
+            <Search />
+          </div>
+          <div className="flex gap-x-[16px] px-[16px] pt-[26px]">
+            <NewOrdersList />
+            <PreparingOrdersList />
+            <ReadyOrdersList />
+            <DeliveringOrdersList />
+          </div>
         </div>
       </div>
-    </div>
+    </Provider>
   );
 }
+
+const Search = () => {
+  const search = useAppSelector((state) => state.todos.search);
+  const dispatch = useAppDispatch();
+  return (
+    <Input
+      value={search}
+      wrapperClassName="w-[240px]"
+      icon={<SearchIcon />}
+      placeholder="Поиск по ID"
+      onChange={(ev) => dispatch(searchChanged({ value: ev.target.value }))}
+    />
+  );
+};
+
+const NewOrdersList = () => {
+  const orders = useAppSelector((state) =>
+    state.todos.orders.filter((order) => order.status === "new"),
+  );
+  return (
+    <OrdersList status="new" ordersAmount={orders.length}>
+      {orders.map((order) => (
+        <NewOrder key={order.id} order={order} />
+      ))}
+    </OrdersList>
+  );
+};
+
+const PreparingOrdersList = () => {
+  const orders = useAppSelector((state) =>
+    state.todos.orders.filter((order) => order.status === "preparing"),
+  );
+  return (
+    <OrdersList status="preparing" ordersAmount={orders.length}>
+      {orders.map((order, index) => (
+        <PreparingOrder
+          key={order.id}
+          order={order}
+          ready={index === 0}
+          comments={index === 0 ? [""] : undefined}
+        />
+      ))}
+    </OrdersList>
+  );
+};
+
+const ReadyOrdersList = () => {
+  const orders = useAppSelector((state) =>
+    state.todos.orders.filter((order) => order.status === "ready"),
+  );
+  return (
+    <OrdersList status="ready" ordersAmount={orders.length}>
+      {orders.map((order, index) => (
+        <ReadyOrder
+          key={order.id}
+          order={order}
+          complete={index === orders.length - 1}
+        />
+      ))}
+    </OrdersList>
+  );
+};
+
+const DeliveringOrdersList = () => {
+  const orders = useAppSelector((state) =>
+    state.todos.orders.filter((order) => order.status === "delivering"),
+  );
+  return (
+    <OrdersList status="delivering" ordersAmount={orders.length}>
+      {orders.map((order) => (
+        <BaseOrder key={order.id} order={order} />
+      ))}
+    </OrdersList>
+  );
+};
