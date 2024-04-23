@@ -6,7 +6,7 @@ import { Provider } from "react-redux";
 import { store } from "@/app/store";
 import { useAppSelector, useAppDispatch } from "@/app/hooks";
 import { Input } from "@/app/ui/input";
-import { SearchIcon } from "@/app/ui/icons";
+import { CaretDownIcon, SearchIcon } from "@/app/ui/icons";
 import { searchChanged, selectOrdersBySearch } from "@/app/orders";
 
 import { Header } from "./ui/header";
@@ -18,6 +18,7 @@ import {
   ReadyOrder,
   BaseOrder,
 } from "./ui/orders";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -26,8 +27,12 @@ export default function Home() {
         <Sidebar />
         <div className="w-full">
           <Header />
-          <div className="px-[16px] py-[10px]">
+          <div className="flex justify-between px-[16px] py-[10px]">
             <Search />
+            <div className="flex gap-x-[16px]">
+              <Date />
+              <Time />
+            </div>
           </div>
           <div className="flex gap-x-[16px] px-[16px] pt-[26px]">
             <NewOrdersList />
@@ -52,6 +57,38 @@ const Search = () => {
       placeholder="Поиск по ID"
       onChange={(ev) => dispatch(searchChanged({ value: ev.target.value }))}
     />
+  );
+};
+
+const Date = () => {
+  const totalOrders = useAppSelector((state) => state.orders.orders.length);
+  return (
+    <div className="flex items-center gap-x-[12px] rounded-[6px] border border-solid border-border-primary px-[12px] py-[6px]">
+      <Image
+        src="/icons/shopping-list.svg"
+        alt="shopping list"
+        height={20}
+        width={20}
+      />
+      <div className="text-[14px] font-normal leading-[24px]">
+        Всего: {totalOrders}
+      </div>
+      <CaretDownIcon color="#0E73F6" width={20} height={20} />
+    </div>
+  );
+};
+
+const Time = () => {
+  return (
+    <div className="flex gap-x-[8px] rounded-[6px] border border-solid border-border-primary px-[12px] py-[6px]">
+      <Image
+        src="/icons/watch-outline.svg"
+        alt="watch"
+        height={20}
+        width={20}
+      />
+      <div className="text-[14px] font-normal leading-[24px]">45:08</div>
+    </div>
   );
 };
 
