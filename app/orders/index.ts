@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import { orders } from "@/app/lib/orders";
+import { Order, orders } from "@/app/lib/orders";
 import { RootState } from "@/app/store";
 
 const initialState = {
@@ -13,8 +13,45 @@ export const ordersSlice = createSlice({
   name: "orders",
   initialState,
   reducers: {
-    searchChanged: (state, payload: PayloadAction<{ value: string }>) => {
-      state.search = payload.payload.value;
+    searchChanged: (state, { payload }: PayloadAction<{ value: string }>) => {
+      state.search = payload.value;
+    },
+    newOrderRejected: (state, { payload }: PayloadAction<{ order: Order }>) => {
+      if (payload.order.status === "new") {
+        state.orders = state.orders.filter(
+          (order) => order.id !== payload.order.id,
+        );
+      }
+    },
+    newOrderAccepted: (state, { payload }: PayloadAction<{ order: Order }>) => {
+      if (payload.order.status === "new") {
+        state.orders = state.orders.filter(
+          (order) => order.id !== payload.order.id,
+        );
+        state.orders.push({ ...payload.order, status: "preparing" });
+      }
+    },
+    preparingOrderGotReady: (
+      state,
+      { payload }: PayloadAction<{ order: Order }>,
+    ) => {
+      if (payload.order.status === "preparing") {
+        state.orders = state.orders.filter(
+          (order) => order.id !== payload.order.id,
+        );
+        state.orders.push({ ...payload.order, status: "ready" });
+      }
+    },
+    readyOrderCompleted: (
+      state,
+      { payload }: PayloadAction<{ order: Order }>,
+    ) => {
+      if (payload.order.status === "ready") {
+        state.orders = state.orders.filter(
+          (order) => order.id !== payload.order.id,
+        );
+        state.orders.push({ ...payload.order, status: "delivering" });
+      }
     },
   },
 });
@@ -28,4 +65,10 @@ export const selectOrdersBySearch = (state: RootState) => {
   );
 };
 
-export const { searchChanged } = ordersSlice.actions;
+export const {
+  searchChanged,
+  newOrderRejected,
+  newOrderAccepted,
+  preparingOrderGotReady,
+  readyOrderCompleted,
+} = ordersSlice.actions;

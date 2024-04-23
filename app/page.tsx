@@ -76,12 +76,12 @@ const PreparingOrdersList = () => {
   );
   return (
     <OrdersList status="preparing" ordersAmount={orders.length}>
-      {orders.map((order, index) => (
+      {orders.map((order) => (
         <PreparingOrder
           key={order.id}
           order={order}
-          ready={index === 0}
-          comments={index === 0 ? comments : undefined}
+          ready={order.id === 321550}
+          comments={order.id === 321550 ? comments : undefined}
         />
       ))}
     </OrdersList>
@@ -94,11 +94,11 @@ const ReadyOrdersList = () => {
   );
   return (
     <OrdersList status="ready" ordersAmount={orders.length}>
-      {orders.map((order, index) => (
+      {orders.map((order) => (
         <ReadyOrder
           key={order.id}
           order={order}
-          complete={index === orders.length - 1}
+          complete={order.id === 321556}
         />
       ))}
     </OrdersList>

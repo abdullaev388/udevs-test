@@ -9,16 +9,32 @@ import {
 } from "@/app/lib/orders";
 import { Button } from "@/app/ui/button";
 import { DoneIcon, CloseIcon, CaretDownIcon } from "@/app/ui/icons";
+import { useAppDispatch } from "@/app/hooks";
+import {
+  newOrderAccepted,
+  newOrderRejected,
+  preparingOrderGotReady,
+  readyOrderCompleted,
+} from "@/app/orders";
 
 export const NewOrder = React.memo(({ order }: { order: Order }) => {
+  const dispatch = useAppDispatch();
   return (
     <BaseOrder order={order}>
       <div className="flex gap-x-[6px] p-[12px]">
-        <Button className="w-full" appearance="secondary" color="red">
+        <Button
+          className="w-full"
+          appearance="secondary"
+          color="red"
+          onClick={() => dispatch(newOrderRejected({ order }))}>
           <CloseIcon width={16} height={16} color="#F76659" />
           Отменить
         </Button>
-        <Button className="w-full" appearance="primary" color="primary">
+        <Button
+          className="w-full"
+          appearance="primary"
+          color="primary"
+          onClick={() => dispatch(newOrderAccepted({ order }))}>
           <DoneIcon width={20} height={20} color="white" />
           Принять
         </Button>
@@ -37,6 +53,7 @@ export const PreparingOrder = React.memo(
     comments?: string[];
     ready?: boolean;
   }) => {
+    const dispatch = useAppDispatch();
     return (
       <BaseOrder order={order}>
         <div className="flex flex-col gap-y-[20px] p-[12px]">
@@ -54,7 +71,11 @@ export const PreparingOrder = React.memo(
             </div>
           )}
           {ready && (
-            <Button className="w-full" appearance="secondary" color="primary">
+            <Button
+              className="w-full"
+              appearance="secondary"
+              color="primary"
+              onClick={() => dispatch(preparingOrderGotReady({ order }))}>
               <DoneIcon width={20} height={20} color="#0E73F6" />
               Готово
             </Button>
@@ -67,11 +88,16 @@ export const PreparingOrder = React.memo(
 
 export const ReadyOrder = React.memo(
   ({ order, complete }: { order: Order; complete?: boolean }) => {
+    const dispatch = useAppDispatch();
     return (
       <BaseOrder order={order}>
         <div className="flex gap-x-[6px] p-[12px]">
           {complete && (
-            <Button className="w-full" appearance="secondary" color="primary">
+            <Button
+              className="w-full"
+              appearance="secondary"
+              color="primary"
+              onClick={() => dispatch(readyOrderCompleted({ order }))}>
               Завершить
             </Button>
           )}
